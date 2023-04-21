@@ -6,6 +6,8 @@ import {auth,storage,db} from  "../firebase";
 import { UserCredential } from 'firebase/auth';
 import {  ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
+import { Link, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom'; 
 //create html objects
 /*var outerdiv = document.createElement('div');
 var innerdiv = document.createElement('div');
@@ -21,37 +23,11 @@ var password = document.createElement('input');
 var file = document.createElement('input');
 var sign_up_button = document.createElement('button');
 
-//set up html object attribute
-logo.className='logo';
-title.className='title';
-outerdiv.className='formContainer';
-innerdiv.className='wrapContainer'
-name.type='text';
-email.type='email';
-password.type='password';
-file.type='file';
-para.innerText="Already have an account? Login";
-sign_up_button.innerText="Sign Up";
-logo.innerText="Chat Room";
-title.innerText="Register";
-
-//make object connects to each other
-outerdiv.appendChild(innerdiv);
-
-innerdiv.appendChild(logo);
-innerdiv.appendChild(title);
-innerdiv.appendChild(form);
-innerdiv.appendChild(para);
-
-form.appendChild(name);
-form.appendChild(email);
-form.appendChild(password);
-form.appendChild(file);
-
-console.log(outerdiv);  */
+ */
 
 const Register = () =>{
     const [error,setError] = useState(false);
+    const navigate = useNavigate();
     const SumbitEvent = async (e) =>{
         e.preventDefault();
         const userName = e.target[0].value;
@@ -105,6 +81,9 @@ const Register = () =>{
                             email,
                             photoURL: downloadURL, 
                         });
+
+                        await setDoc(doc(db,"userChats",result.user.uid),{});
+                        navigate("/");
                     });
                 }
             );
@@ -129,7 +108,7 @@ const Register = () =>{
                     <button className='signup'>Sign Up</button>
                 </form>
                 {error && <span>Something Went Wrong</span>}
-                <p className='signup'>Already have an account? Login</p>
+                <p className='signup'>Already have an account?<Link to="/login">Login</Link></p>
             </div>
         </div>
     );
