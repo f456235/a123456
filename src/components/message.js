@@ -1,24 +1,35 @@
-import React from "react";
+import React, { useContext, useEffect, useRef } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { ChatContext } from "../context/ChatContext";
 
-const message = () => {
+const Message = ({message}) => {
+    const ref = useRef();
+
+    useEffect(() => {
+      ref.current?.scrollIntoView({ behavior: "smooth" });
+    }, [message]);
+
+    const {currentUser}  = useContext(AuthContext);
+    const {data} = useContext(ChatContext);
     return(
-        <div className="message owner">
+        <div className={`message ${message.senderId === currentUser.uid && "owner"}`}
+            ref={ref}
+        >
             <div className="messageinfo">
-                <img src="https://ca-times.brightspotcdn.com/dims4/default/eea143a/2147483647/strip/false/crop/3882x2184+0+0/resize/1486x836!/quality/80/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fa5%2F62%2Fb29a1da047689f1bdde6251930f8%2Fclippers-basketball-83404.jpg" 
-                     alt="kawhi leonard"
+                <img src={ message.senderId === currentUser.uid
+                            ? currentUser.photoURL
+                            : data.user.photoURL}
+                     alt=""
                      className="messageinfo"
                 />
                 <span>just now</span>
             </div>
             <div className="messagecontent">
-                <p className="message owner">dumb ass bitch</p>
-                <img src="https://ca-times.brightspotcdn.com/dims4/default/eea143a/2147483647/strip/false/crop/3882x2184+0+0/resize/1486x836!/quality/80/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fa5%2F62%2Fb29a1da047689f1bdde6251930f8%2Fclippers-basketball-83404.jpg"
-                     className="messagecontent"
-                     alt=""
-                   />
+                <p className="message owner">{message.text}</p>
+                {message.img && <img src={message.img} alt="" />}
             </div>
         </div>
     )
 }
 
-export default message;
+export default Message;

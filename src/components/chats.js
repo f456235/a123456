@@ -1,47 +1,50 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { onSnapshot,doc } from "firebase/firestore";
+import { AuthContext } from "../context/AuthContext";
+import { db } from "../firebase";
 
-const chats = () => {
+import { ChatContext } from "../context/ChatContext";
+const Chats = () => {
+
+    const [chats,setChats] = useState([])
+    const {currentUser} = useContext(AuthContext);
+    const {dispatch} = useContext(ChatContext) ;
+    useEffect (()=>{
+       const getChats = () =>{
+        const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+            setChats(doc.data());
+          });
+
+            return ()=>{
+                unsub();
+            };
+       };
+
+       currentUser.uid && getChats();
+    },[currentUser.uid]);
+
+    const handleSelect = (u) => {
+        dispatch({type:"CHANGE_USER", payload: u})
+    };
+    //console.log(chats);
+    {Object.entries(chats).map((chat)=>{
+        //console.log(chat[1]);
+    })};
     return(
         <div className="chats">
-            <div className="userChat">
-                <img className="userChatimg" src="https://ca-times.brightspotcdn.com/dims4/default/eea143a/2147483647/strip/false/crop/3882x2184+0+0/resize/1486x836!/quality/80/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fa5%2F62%2Fb29a1da047689f1bdde6251930f8%2Fclippers-basketball-83404.jpg" alt=""/>
-                <div className="userInfo">
-                    <span className="userChat-span">Kawhi Leonard</span>
-                    <p className="userChat-sentence">Hello</p>
-                </div>
-            </div>
-            <div className="userChat">
-                <img className="userChatimg" src="https://ca-times.brightspotcdn.com/dims4/default/eea143a/2147483647/strip/false/crop/3882x2184+0+0/resize/1486x836!/quality/80/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fa5%2F62%2Fb29a1da047689f1bdde6251930f8%2Fclippers-basketball-83404.jpg" alt=""/>
-                <div className="userInfo">
-                    <span className="userChat-span">Kawhi Leonard</span>
-                    <p className="userChat-sentence">Hello</p>
-                </div>
-            </div>
-            <div className="userChat">
-                <img className="userChatimg" src="https://ca-times.brightspotcdn.com/dims4/default/eea143a/2147483647/strip/false/crop/3882x2184+0+0/resize/1486x836!/quality/80/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fa5%2F62%2Fb29a1da047689f1bdde6251930f8%2Fclippers-basketball-83404.jpg" alt=""/>
-                <div className="userInfo">
-                    <span className="userChat-span">Kawhi Leonard</span>
-                    <p className="userChat-sentence">Hello</p>
-                </div>
-            </div>
-            <div className="userChat">
-                <img className="userChatimg" src="https://ca-times.brightspotcdn.com/dims4/default/eea143a/2147483647/strip/false/crop/3882x2184+0+0/resize/1486x836!/quality/80/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fa5%2F62%2Fb29a1da047689f1bdde6251930f8%2Fclippers-basketball-83404.jpg" alt=""/>
-                <div className="userInfo">
-                    <span className="userChat-span">Kawhi Leonard</span>
-                    <p className="userChat-sentence">Hello</p>
-                </div>
-            </div>
-            <div className="userChat">
-                <img className="userChatimg" src="https://ca-times.brightspotcdn.com/dims4/default/eea143a/2147483647/strip/false/crop/3882x2184+0+0/resize/1486x836!/quality/80/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fa5%2F62%2Fb29a1da047689f1bdde6251930f8%2Fclippers-basketball-83404.jpg" alt=""/>
-                <div className="userInfo">
-                    <span className="userChat-span">fucking bitch</span>
-                    <p className="userChat-sentence">lick my pussy</p>
-                </div>
-            </div>
+            {Object.entries(chats)?.sort((a,b)=>b[1].date - a[1].date).map((chat)=>(
+                 <div className="userChat" key={chat[0]} onClick={()=>handleSelect(chat[1].userInfo)}>
+                 <img className="userChatimg" src={chat[1].userInfo.photoURL} alt="hello"/>
+                 <div className="userInfo">
+                     <span className="userChat-span">{chat[1].userInfo.displayName}</span>
+                     <p className="userChat-sentence">{chat[1].lastMessage?.text}</p>
+                 </div>
+             </div>
+            ))}
         </div>
         
        
     )
 }
 
-export default chats;
+export default Chats;

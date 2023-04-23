@@ -30,14 +30,14 @@ const Register = () =>{
     const navigate = useNavigate();
     const SumbitEvent = async (e) =>{
         e.preventDefault();
-        const userName = e.target[0].value;
+        const  displayName = e.target[0].value;
         const email = e.target[1].value;
         const password = e.target[2].value;
         const userFile = e.target[3].files[0];
         
         try{
             const result = await createUserWithEmailAndPassword (auth,email,password);
-            const storageRef = ref(storage, userName);
+            const storageRef = ref(storage,  displayName);
 
             const uploadTask = uploadBytesResumable(storageRef, userFile);
 
@@ -72,12 +72,12 @@ const Register = () =>{
                     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                     getDownloadURL(uploadTask.snapshot.ref).then(async(downloadURL) => {
                         await updateProfile(result.user,{
-                            userName,
+                            displayName,
                             photoURL: downloadURL,
                         });
                         await setDoc(doc(db, "users", result.user.uid),{
                             uid: result.user.uid,
-                            userName,
+                            displayName,
                             email,
                             photoURL: downloadURL, 
                         });

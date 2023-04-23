@@ -1,19 +1,16 @@
 import React from "react";
-import faceTime from "../img/facetime.png";
-import addPeople from "../img/addNewPeople.png"
-import More from "../img/more.png";
 import Messages from "./messages";
 import Input from "./input";
-const chat = () => {
+import { ChatContext } from "../context/ChatContext";
+import { useContext } from "react";
+const Chat = () => {
+    const { data } = useContext(ChatContext) ;
+    
     return(
         <div className="chat">
             <div className="chatInfo">
-                <span>Joel Embiid</span>
-                <div className="selection-bars">
-                    <img src={faceTime} className="chatIcons"/>
-                    <img src={addPeople} className="chatIcons"/>
-                    <img src={More} className="chatIcons2"/>
-                </div>
+                <span>{data.user?.displayName}</span>
+                <div className="selection-bars"></div>
             </div>
             <Messages />
             <Input/ >
@@ -22,4 +19,4 @@ const chat = () => {
     )
 }
 
-export default chat;
+export default Chat;
