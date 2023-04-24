@@ -14,69 +14,65 @@ const Input = () => {
     const {currentUser}  = useContext(AuthContext);
     const {data} = useContext(ChatContext);
     const handleSend = async () => {
-        if(img){
-            const storageRef = ref(storage,uuid());
-            const uploadTask = uploadBytesResumable(storageRef,img);
+        try {
+          if (img) {
+            const storageRef = ref(storage, uuid());
+            console.log(storageRef);
+            const uploadTask = uploadBytesResumable(storageRef, img);
             uploadTask.on(
-                (error) => {
-                    // Handle unsuccessful uploads
-                    setError(true);
-                }, 
-                () => {
-                    // Handle successful uploads on complete
-                    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-                    getDownloadURL(uploadTask.snapshot.ref).then(async(downloadURL) => {
-                        await updateDoc(doc(db,"chats",data.chatId),{
-                            messages: arrayUnion({
-                                id: uuid(),
-                                text,
-                                senderId: currentUser.uid,
-                                date:Timestamp.now(),
-                                img: downloadURL,
-                            }),
-                        });
-                    });
-                }
+              "state_changed",
+              (snapshot) => {
+                // TODO: Show progress
+              },
+              (error) => {
+                setError(true);
+                console.error(error);
+              },
+              () => {
+                console.log("File uploaded successfully");
+                getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                  await updateDoc(doc(db, "chats", data.chatId), {
+                    messages: arrayUnion({
+                      id: uuid(),
+                      text,
+                      senderId: currentUser.uid,
+                      date: Timestamp.now(),
+                      img: downloadURL,
+                    }),
+                  });
+                });
+              }
             );
-        }else{
-            await updateDoc(doc(db,"chats",data.chatId),{
-                messages: arrayUnion({
-                    id: uuid(),
-                    text,
-                    senderId: currentUser.uid,
-                    date:Timestamp.now(),
-                }),
+          } else {
+            await updateDoc(doc(db, "chats", data.chatId), {
+              messages: arrayUnion({
+                id: uuid(),
+                text,
+                senderId: currentUser.uid,
+                date: Timestamp.now(),
+              }),
             });
+          }
+          setText("");
+          setImg(null);
+          setError(false);
+        } catch (error) {
+          console.error(error);
+          setError(true);
         }
+      };
 
-        await updateDoc(doc(db,"userChats",currentUser.uid),{
-            [data.chatId+".lastMessage"]:{
-                text,
-            },
-            [data.chatId+".date"] : serverTimestamp(),
-        });
-        
-        await updateDoc(doc(db,"userChats",data.user.uid),{
-            [data.chatId+".lastMessage"]:{
-                text,
-            },
-            [data.chatId+".date"] : serverTimestamp(),
-        });
-
-        setText("");
-        setImg(null);
-    };
     return(
         <div className="chat-input">
             <input type="text" value={text} placeholder="start chatting..." className="chats" 
-             onChange={(e)=>setText(e.target.value)} value={text}/>
+             onChange={(e)=>setText(e.target.value)} />
+             
             <div className="send">
-               
-                <input type="file" style={{display:"none"}} className="input-file" onChange={(e)=>setImg(e.target.files[0])}/>
-                <label htmlFor="input-file">
-                    <img className="chat-file" src={attachment} alt="add file"/>
-                </label>
-                <button className="input-send" onClick={handleSend}>Send</button>
+                <input type="file" style={{display:"none"}} id="input-file" onChange={(e)=>setImg(e.target.files[0])}/>
+                    <label htmlFor="input-file">
+                        <img className="chat-file" src={attachment} alt="add file"/>
+                    </label>
+                    <button className="input-send" onClick={handleSend}>Send</button>
             </div>
         </div>
     )

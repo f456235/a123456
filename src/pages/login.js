@@ -26,7 +26,7 @@ const Login = () =>{
             <div className='RegisterWrpper'>
                 <span className='logo'>Chat Room </span>
                 <span className='title'>Login</span>
-                <form onSubmit={LoginSumbitEvent}>
+                <form onSubmit={LoginSumbitEvent} className="register-form">
                   
                     <input type='email' placeholder='email'/>
                     <input type='password' placeholder='password'/>

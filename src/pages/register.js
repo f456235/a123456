@@ -96,14 +96,14 @@ const Register = () =>{
             <div className='RegisterWrpper'>
                 <span className='logo'>Chat Room </span>
                 <span className='title'>Register</span>
-                <form onSubmit={SumbitEvent}>
+                <form onSubmit={SumbitEvent} className="register-form">
                     <input type='text' placeholder='name'/>
                     <input type='email' placeholder='email'/>
                     <input type='password' placeholder='password'/>
                     <input style={{display:'none'}} type='file' id ='file'/>
                     <label htmlFor='file'className="signupimage">
                         <img  id = "addimage" src={AddImage} alt="add"/>
-                        <span>Add ur own image</span>
+                        <span>Add ur profile image</span>
                     </label >
                     <button className='signup'>Sign Up</button>
                 </form>

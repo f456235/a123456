@@ -1,8 +1,10 @@
 import React, { useContext, useState } from "react";
 import { db } from "../firebase";
-import { collection,query,serverTimestamp,setDoc,where } from "firebase/firestore";
+import { arrayUnion, collection,query,serverTimestamp,setDoc,where } from "firebase/firestore";
 import { getDocs ,updateDoc,doc,getDoc} from "firebase/firestore";
 import {AuthContext} from "../context/AuthContext";
+import addChatRoom from "../img/chatroom.png";
+
 const Search = () => {
 
   const [username, setUsername] = useState("");
@@ -52,7 +54,7 @@ const Search = () => {
         
         //console.log(currentUserRef);
         //create user chats
-        console.log("a");
+       
         
         await updateDoc( doc(db,"userChats",currentUser.uid), {
           [combinedId + ".userInfo"]: {
@@ -62,10 +64,8 @@ const Search = () => {
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
-        console.log("b");
-        console.log("c");
-        console.log(currentUser);
-        console.log(username);
+      
+      
         await updateDoc(doc(db,"userChats",user.uid), {
           [combinedId + ".userInfo"]: {
             uid: user.uid,
@@ -88,10 +88,55 @@ const Search = () => {
     setUser(null);
     setUsername("")
   };
-
+  const handleClick = async () =>{
+    var text = prompt ("plesae give a name.");
+    console.log(text);
+    
+    try{
+      const res = await getDoc(doc(db, "chats", text));
+      const currentUserRef = doc(db,"userChats",currentUser.uid);
+      //const userRef = doc(db,"userChats",user.uid);
+      if (!res.exists()) {
+        //create a chat in chats collection
+        await setDoc(doc(db, "chats", text), { messages: [],member: [{
+          uid: currentUser.uid,
+            displayName: currentUser.displayName,
+            photoURL: currentUser.photoURL,
+        }]});
+        
+        await updateDoc( doc(db,"userChats",currentUser.uid), {
+          [text + ".userInfo"]: {
+            uid: currentUser.uid,
+            displayName: currentUser.displayName,
+            photoURL: currentUser.photoURL,
+          },
+          [text + ".date"]: serverTimestamp(),
+        });
+        
+      }else{
+        await updateDoc(doc(db, "chats", text), {member: arrayUnion({
+            uid: currentUser.uid,
+            displayName: currentUser.displayName,
+            photoURL: currentUser.photoURL,
+          })
+        });
+        await updateDoc( doc(db,"userChats",currentUser.uid), {
+          [text + ".userInfo"]: {
+            uid: currentUser.uid,
+            displayName: currentUser.displayName,
+            photoURL: currentUser.photoURL,
+          },
+          [text + ".date"]: serverTimestamp(),
+        });
+      }
+    }catch(err){
+      setErr(true);
+    }
+  }
     return(
         <div className="search">
-            <div className="searchInput">
+             <img src={addChatRoom} onClick={()=>handleClick()} className="addChat" alt=""/>
+            {/*<div className="searchInput">
                 <input type="text" className="search" placeholder="find user"
                 onKeyDown={handleKey} onChange={e=>setUsername(e.target.value)}
                 value={username}
@@ -103,7 +148,8 @@ const Search = () => {
                 <div className="userInfo">
                     <span className="userChat-span">{user.displayName}</span>
                 </div>
-            </div>}
+            </div>}*/}
+
         </div>
     )
 }
