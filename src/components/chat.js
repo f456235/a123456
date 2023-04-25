@@ -96,7 +96,8 @@ const Chat = () => {
 
         <div className="chat">
             <div className="chatInfo">
-                <span>{data.chatId}</span>
+                {data.chatId !== "null" && <span>{data.chatId}</span>}
+                {data.chatId === "null" && <span>please select or create a chatroom on the left hand side!</span>}
                 <img src={img} onClick={()=>handleClick()} className="addpeople"/>
                 
             </div>

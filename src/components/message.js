@@ -68,7 +68,7 @@ const Message = ({message}) => {
             </div>
             <div className="messagecontent">
                 {message.text !== "" && <p className={`message ${message.senderId === currentUser.uid && "owner"}`}>{message.text}</p>}
-                {message.img && < img src={message.img} alt="" />}
+                {message.img && < img src={message.img} alt="" className="message"/>}
             </div>
         </div>
     )
