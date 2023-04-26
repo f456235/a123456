@@ -1,9 +1,11 @@
 import React from 'react';
 import AddImage from '../img/add-image.png'
-import {  signInWithEmailAndPassword } from "firebase/auth";
+import {  GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth } from '../firebase';
 import { useNavigate, Link} from 'react-router-dom';
 import { useState } from 'react';
+import { getDoc ,doc} from 'firebase/firestore';
+import { db } from '../firebase';
 const Login = () =>{
     const [error,setError] = useState(false);
     const navigate = useNavigate();
@@ -18,9 +20,13 @@ const Login = () =>{
            await signInWithEmailAndPassword(auth, email, password);
             navigate("/");
         }catch(error){
+            alert("wrong account/password!");
             setError(true);
+            e.target[0].value = "";
+            e.target[1].value = "";
         } 
     }
+   
     return (
         <div className='RegisterContainer'>
             <div className='RegisterWrpper'>
@@ -34,6 +40,7 @@ const Login = () =>{
                     <button className='signup'>Sign In</button>
                     {error && <span>Something went wrong !</span>}
                 </form>
+                
                 <p className='signup'>You don't have an account?   <Link to="/register">Register</Link></p>
             </div>
         </div>

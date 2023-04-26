@@ -1,13 +1,17 @@
 import React from 'react';
 import { useState } from 'react';
 import AddImage from '../img/add-image.png'
-import {createUserWithEmailAndPassword,updateProfile} from "firebase/auth";
+import {createUserWithEmailAndPassword,signInWithCredential,signInWithPopup,updateProfile} from "firebase/auth";
 import {auth,storage,db} from  "../firebase";
 import { UserCredential } from 'firebase/auth';
 import {  ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc ,getDoc} from "firebase/firestore";
 import { Link, useNavigate } from 'react-router-dom';
 import { Navigate } from 'react-router-dom'; 
+
+import { GoogleAuthProvider } from "firebase/auth";
+
+
 //create html objects
 /*var outerdiv = document.createElement('div');
 var innerdiv = document.createElement('div');
@@ -25,9 +29,14 @@ var sign_up_button = document.createElement('button');
 
  */
 
+
+
 const Register = () =>{
     const [error,setError] = useState(false);
     const navigate = useNavigate();
+
+
+
     const SumbitEvent = async (e) =>{
         e.preventDefault();
         const  displayName = e.target[0].value;
@@ -65,6 +74,7 @@ const Register = () =>{
                 }, 
                 (error) => {
                     // Handle unsuccessful uploads
+                    alert(error.message);
                     setError(true);
                 }, 
                 () => {
@@ -87,8 +97,13 @@ const Register = () =>{
                     });
                 }
             );
-        }catch(err){
+        }catch(error){
             setError(true);
+            alert("invalid format!");
+            e.target[0].value="";
+            e.target[1].value="";
+            e.target[2].value="";
+            setError(false);
         } 
     }
     return (
@@ -107,6 +122,7 @@ const Register = () =>{
                     </label >
                     <button className='signup'>Sign Up</button>
                 </form>
+                
                 {error && <span>Something Went Wrong</span>}
                 <p className='signup'>Already have an account?<Link to="/login">Login</Link></p>
             </div>

@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/static/css/main.200f0d2e.css",
-    "main.js": "/static/js/main.52f22fc5.js",
+    "main.css": "/static/css/main.62d63bd7.css",
+    "main.js": "/static/js/main.7f7197d2.js",
+    "static/media/chat_group.png": "/static/media/chat_group.3ef26cd702aa9417ae9c.png",
     "static/media/addNewPeople.png": "/static/media/addNewPeople.45a0b3694926ec36b16a.png",
-    "static/media/facetime.png": "/static/media/facetime.076f54b2801a5dcb45af.png",
+    "static/media/chatroom.png": "/static/media/chatroom.aabc078e8f8bff52237d.png",
     "static/media/attachment.png": "/static/media/attachment.cc5069b5199c17a4eee2.png",
     "static/media/add-image.png": "/static/media/add-image.a765293a2de18c2352b8.png",
-    "static/media/more.png": "/static/media/more.cb8e3269f3cd99eda9bd.png",
     "index.html": "/index.html",
-    "main.200f0d2e.css.map": "/static/css/main.200f0d2e.css.map",
-    "main.52f22fc5.js.map": "/static/js/main.52f22fc5.js.map"
+    "main.62d63bd7.css.map": "/static/css/main.62d63bd7.css.map",
+    "main.7f7197d2.js.map": "/static/js/main.7f7197d2.js.map"
   },
   "entrypoints": [
-    "static/css/main.200f0d2e.css",
-    "static/js/main.52f22fc5.js"
+    "static/css/main.62d63bd7.css",
+    "static/js/main.7f7197d2.js"
   ]
 }

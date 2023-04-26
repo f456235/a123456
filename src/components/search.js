@@ -50,6 +50,7 @@ const Search = () => {
       const userRef = doc(db,"userChats",user.uid);
       if (!res.exists()) {
         //create a chat in chats collection
+        alert("chatroom not exist, create a new one!");
         await setDoc(doc(db, "chats", combinedId), { messages: [] });
         
         //console.log(currentUserRef);
@@ -98,6 +99,7 @@ const Search = () => {
       //const userRef = doc(db,"userChats",user.uid);
       if (!res.exists()) {
         //create a chat in chats collection
+        alert("chatroom not exist, create a new one!");
         await setDoc(doc(db, "chats", text), { messages: [],member: [{
           uid: currentUser.uid,
             displayName: currentUser.displayName,
@@ -114,6 +116,7 @@ const Search = () => {
         });
         
       }else{
+        alert("chatroom exists, you are added to chatroom!");
         await updateDoc(doc(db, "chats", text), {member: arrayUnion({
             uid: currentUser.uid,
             displayName: currentUser.displayName,
